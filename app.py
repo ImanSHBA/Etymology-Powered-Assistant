@@ -395,6 +395,7 @@ def personalized_learning_chatbot_page():
             assistant_response = handle_general_chat()
         st.chat_message("assistant").markdown(assistant_response)
         st.session_state.history_chat.append({"role": "assistant", "content": assistant_response})
+        st.rerun()
 
 def determine_command(user_input):
     # Classify the user input using LLM into one of: new lesson, more examples, add to vocab, general chat.
@@ -425,10 +426,119 @@ def determine_command(user_input):
     return result
 
 
+
+def add_custom_css():
+    st.markdown(
+        """
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        html, body, [class*="css"] {
+            font-family: 'Poppins', sans-serif;
+            background-color: #F2F6FF;
+        }
+
+        /* === MAIN CONTAINER === */
+        .reportview-container .main .block-container {
+            background: linear-gradient(145deg, #FFFFFF, #F0F4FF);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        /* === SIDEBAR === */
+        .sidebar .sidebar-content {
+            background: linear-gradient(180deg, #7FB3D5, #76D7C4);
+            border-top-right-radius: 25px;
+            border-bottom-right-radius: 25px;
+            padding: 1.5rem;
+            color: #fff;
+        }
+
+        /* === BUTTONS (unchanged) === */
+        div.stButton > button {
+            background: linear-gradient(135deg, #536976, #292E49);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 26px;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+
+        div.stButton > button:hover {
+            background: linear-gradient(135deg, #292E49, #536976);
+            transform: scale(1.04);
+        }
+
+        /* === CHAT BUBBLES === */
+        div[data-testid="stChatMessage"] {
+            max-width: 80%;
+            padding: 14px 20px;
+            margin: 16px 0;
+            border-radius: 18px;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* === Assistant Message (left-aligned cloud) === */
+        div[data-testid="stChatMessage"][data-isassistant="true"] {
+            background-color: #DCF8C6;
+            color: #1B4F3F;
+            align-self: flex-start;
+            margin-left: 0;
+        }
+
+        div[data-testid="stChatMessage"][data-isassistant="true"]::after {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: -10px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid #DCF8C6;
+        }
+
+        /* === User Message (right-aligned cloud) === */
+        div[data-testid="stChatMessage"][data-isassistant="false"] {
+            background-color: #FFFFFF;
+            color: #333;
+            align-self: flex-end;
+            margin-right: 0;
+            border: 1px solid #DADADA;
+        }
+
+        div[data-testid="stChatMessage"][data-isassistant="false"]::after {
+            content: "";
+            position: absolute;
+            top: 10px;
+            right: -10px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 10px solid #FFFFFF;
+        }
+
+        /* === Other Elements (inputs, tabs, etc.) — optionally leave as-is for now === */
+
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+
 # ---------------- Main App ---------------- #
 def main():
     st.title("Language Learning Prototype")
-    
+    add_custom_css()
     language_preferences_sidebar()
     
     if "vocab_bank" not in st.session_state:
@@ -449,6 +559,7 @@ def main():
         semantic_family_tree_page()
     with tabs[3]:
         vocabulary_bank_page()
+
 
 if __name__ == "__main__":
     main()
